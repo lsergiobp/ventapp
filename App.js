@@ -1,12 +1,18 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, TextInput } from 'react-native';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-} from 'react-native';
+  MainContainer,
+  Input,
+  ResultText,
+  Title,
+  Label,
+  Output,
+  SubmitButton,
+  SubmitButtonText,
+} from './styles';
+
 function VentApp() {
+  const [mc, setMc] = useState('');
   const [fr, setFr] = useState(0);
   const [volume, setVolume] = useState(0);
   const [ers, setErs] = useState(0);
@@ -26,11 +32,11 @@ function VentApp() {
   };
 
   const handlePlato = (plato) => {
-    setErs(plato);
+    setPlato(plato);
   };
 
   const handlePeep = (peep) => {
-    setErs(peep);
+    setPeep(peep);
   };
 
   const handleErs = (fr) => {
@@ -46,11 +52,11 @@ function VentApp() {
   };
 
   const handlePico = (pico) => {
-    setRaw(pico);
+    setPico(pico);
   };
 
   const handleFlux = (flux) => {
-    setRaw(flux);
+    setFlux(flux);
   };
 
   const calculateErs = () => {
@@ -62,156 +68,114 @@ function VentApp() {
 
   const calculateRaw = () => {
     if (pico != null && plato != null && flux != null) {
-      let ers = (pico - plato) / flux;
-      setErs(raw);
+      let raw = (pico - plato) / flux;
+      setRaw(raw);
     }
   };
 
-  const calculateVent = () => {
-    //calculation
+  const calculateMc = () => {
+    let mc =
+      0.098 *
+      fr *
+      (volume * volume * (ers / 2 + fr * (((1 + ie) / 60) * ie) * raw) +
+        volume * peep);
+    setMc(mc);
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Lenon Mechanical Power Calculator</Text>
+    <MainContainer>
+      <Title>Lenon Mechanical Power Calculator</Title>
 
-      <Text style={styles.label}>FR</Text>
-      <TextInput
-        style={styles.input}
+      <Label>FR</Label>
+      <Input
+        keyboardType='numeric'
         underlineColorAndroid='transparent'
         placeholder='Frequência Respiratória'
         autoCapitalize='none'
         onChangeText={handleFr}
       />
 
-      <Text style={styles.label}>Volume Corrente(L)</Text>
-      <TextInput
-        style={styles.input}
+      <Label>Volume Corrente(L)</Label>
+      <Input
+        keyboardType='numeric'
         underlineColorAndroid='transparent'
         placeholder='Volume em litros'
         autoCapitalize='none'
         onChangeText={handleVolume}
       />
 
-      <Text style={styles.label}>Plato</Text>
-      <TextInput
-        style={styles.input}
+      <Label>Plato</Label>
+      <Input
+        keyboardType='numeric'
         underlineColorAndroid='transparent'
         placeholder='Plato'
         autoCapitalize='none'
         onChangeText={handlePlato}
       />
 
-      <Text style={styles.label}>PEEP</Text>
-      <TextInput
-        style={styles.input}
+      <Label>PEEP</Label>
+      <Input
+        keyboardType='numeric'
         underlineColorAndroid='transparent'
         placeholder='PEEP'
         autoCapitalize='none'
         onChangeText={handlePeep}
       />
 
-      <Text style={styles.label}>ERS</Text>
-      <TextInput
-        style={styles.input}
+      <Label>ERS</Label>
+      <Input
+        keyboardType='numeric'
         underlineColorAndroid='transparent'
         placeholder='Elastância/Complacência'
         autoCapitalize='none'
         disabled
-        value={ers}
+        value={ers.toString()}
       />
 
-      <Text style={styles.label}>I:E</Text>
-      <TextInput
-        style={styles.input}
+      <Label>I:E</Label>
+      <Input
+        keyboardType='numeric'
         underlineColorAndroid='transparent'
         placeholder='Relação Inspiratória/Respiratória'
         autoCapitalize='none'
         onChangeText={handleIe}
       />
 
-      <Text style={styles.label}>Pico</Text>
-      <TextInput
-        style={styles.input}
+      <Label>Pico</Label>
+      <Input
+        keyboardType='numeric'
         underlineColorAndroid='transparent'
         placeholder='Pico'
         autoCapitalize='none'
         onChangeText={handlePico}
       />
 
-      <Text style={styles.label}>Fluxo</Text>
-      <TextInput
-        style={styles.input}
+      <Label>Fluxo</Label>
+      <Input
+        keyboardType='numeric'
         underlineColorAndroid='transparent'
         placeholder='Fluxo'
         autoCapitalize='none'
         onChangeText={handleFlux}
       />
 
-      <Text style={styles.label}>Raw</Text>
-      <TextInput
-        style={styles.input}
+      <Label>Raw</Label>
+      <Input
+        keyboardType='numeric'
         underlineColorAndroid='transparent'
         placeholder='Resistência'
         autoCapitalize='none'
         disabled
-        value={raw}
+        value={raw.toString()}
       />
 
-      <TouchableOpacity
-        style={styles.submitButton}
-        onPress={() => calculateErs()}
-      >
-        <Text style={styles.submitButtonText}>Calculate Mechanical Power</Text>
-      </TouchableOpacity>
-      <Text style={styles.output}>{}</Text>
-      <Text style={styles.resultText}>{}</Text>
-    </View>
+      <SubmitButton onPress={() => calculateMc()}>
+        <SubmitButtonText>Calculate Mechanical Power</SubmitButtonText>
+      </SubmitButton>
+      <Output>{mc}</Output>
+      <ResultText>{}</ResultText>
+    </MainContainer>
   );
 }
 
 export default VentApp;
-
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 23,
-  },
-  input: {
-    margin: 15,
-    height: 40,
-    borderWidth: 1,
-    padding: 10,
-  },
-  submitButton: {
-    backgroundColor: '#ff6666',
-    padding: 10,
-    margin: 15,
-    height: 40,
-  },
-  submitButtonText: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 18,
-  },
-  output: {
-    textAlign: 'center',
-    fontSize: 30,
-  },
-  title: {
-    paddingTop: 30,
-    paddingBottom: 10,
-    textAlign: 'center',
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-  resultText: {
-    paddingTop: 20,
-    paddingBottom: 10,
-    textAlign: 'center',
-    fontSize: 30,
-    color: 'blue',
-  },
-  label: {
-    marginLeft: 15,
-  },
-});
